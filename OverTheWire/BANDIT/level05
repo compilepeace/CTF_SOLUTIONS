@@ -1,0 +1,38 @@
+
+
+1.	First, we login to the remote sever with ssh
+
+		$ ssh bandit5@bandit.labs.overthewire.org -p 2220
+		username: bandit5
+		password: koReBOKuIDDepwhWk7jZC0RTdopnAYKh
+
+		$ ls
+		$ cd inhere
+		$ ls
+		
+2.	Here we see many directories named 'maybehere{00-17}' and level5 states that the 
+	password has following charecterstics - 
+			
+			* human-readable
+			* 1033-bytes in size
+			* not-executable
+
+3.	For this we need to research the topics - Regular Expressions and find.		
+
+4.  Since we are told that it is 1033-bytes long, we search for a file with exact size
+	of 1033-bytes. This can be done with the help of 'find' command which is used to 
+	search for files in a directory (or subdirectories even) with variety of attributes.
+
+													
+													
+		$ find . -type f -size 1033c				# Syntax - find directory0 -options
+		./inhere/maybehere07/.file2					
+		
+		$ cat ./inhere/maybehere07/.file2
+		DXjZPULLxYr17uwoI01bNLQbtFemEgo7
+		
+
+~>	Here we used 'find' command which acts as a utility to find desired files based on
+	variety of attributes. Here -size option uses '1033c', 'c' here stands for a 
+	charecter byte. It matches any file with 1033-bytes size.
+	The above string is used as a password for next level.

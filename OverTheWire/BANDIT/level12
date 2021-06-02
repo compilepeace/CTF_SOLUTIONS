@@ -1,0 +1,70 @@
+
+
+1.	First loging into remote server via ssh
+		$ ssh bandit12@bandit.labs.overthewire.org -p 2220
+			username: bandit12
+			password: 5Te8Y4drgCRfCx8ugdwuEX8KFC6k2EUu
+
+
+2.	As the admin says -
+		'The password for the next level is stored in the file data.txt, which is a hexdump of a 
+		 file that has been repeatedly compressed. For this level it may be useful to create a 
+		 directory under /tmp in which you can work using mkdir. For example: mkdir /tmp/myname123.
+		 Then copy the datafile using cp, and rename it using mv (read the manpages!).
+
+
+3.	At we can see the listing of home directory, there is a file data.txt. As we look at its contents, 
+	it contains hexadecimal set of values. So first we'll have to convert it into binary form to process
+	the furthur decompression.
+
+		$ ls 
+		data.txt
+		$ xxd -r data.txt 
+		bh�F�dH�� hbC44���h4��@����+m���������?g�����������������9�H
+                   b2�ׂ�{�#t��u��
+                                 x-7�a\�@ڸ�2X!=��첍Q��;б��*��E�(���x�v
+		����&K�x�ɼ+>�QY���6�(n�û+��ћp�
+		F�y����0��7���\=[�F17^.��4��a5��Oo�1ݥ�R#T^��#��"�"��+�zߥ���&(盧���'�ė�cBH
+		~����>3y���Y�py��LK^ęe[�
+     		 ���|��_�C��R97
+                      �4;o�I�ah�k�ɺA|��ȿ���@~�2�i�h?X�0͛��${�f�v𥼑1gF̅9�ok�{�iK����~�	
+		)���
+		���aIb
+	
+	So the resulting binary form is then written to STDOUT stream(1). To experiment furthur on the data
+	we need to know what type of file will it be if this binary data is written to a file. So we need 
+	to use the "file" command. Here we will proccess the commands by piping the results to furthur 
+	commands. If we use '-' with file command in place of filename, the file command will read input
+	from the STDIN stream(0). So, we pipe the contents of the above command into file command to know
+	what compression is applied on the data.txt file.
+
+		$ xxd -r data.txt | file -
+		/dev/stdin: gzip compressed data, was "data2.bin", last modified: Thu Dec 28 13:34:36 2017,
+		max compression, from Unix
+		
+	This tells us that the content is compressed by "gzip". As we know that the content compressed with
+	the "gzip" tool is decompressed by the "gunzip" tool, so we give out the result to STDOUT stream.
+	To do this we need to use -c flag with gunzip command and give the results to "file -" command.
+	
+		$ xxd -r data.txt | gunzip -c | bzip2 -dc | gunzip -c | file -
+		/dev/stdin: POSIX tar archive (GNU)
+
+	And similarly we do with the bzip2 command examining the file type step by step. Now we get to know
+	that it is tar archived. Since we want to extract the content using "tar -x" command, we also want
+	the extracted content to be written to STDOUT stream(1). For this, we use the '-O' flag.
+
+		$ xxd -r data.txt | gunzip -c | bzip2 -dc | gunzip -c | tar -xO | tar -xO | bzip2 -dc | 
+		  tar -xO | gunzip -c | file -
+		/dev/stdin: ASCII text
+		
+		$ xxd -r data.txt | gunzip -c | bzip2 -dc | gunzip -c | tar -xO | tar -xO | bzip2 -dc | 
+		  tar -xO | gunzip -c | cat
+		The password is 8ZjyCRiBWFYkneahHwxCv3wb2a1ORpYL
+		
+		
+
+~>	Here, we get the password string for the next level (level 13) which is 
+	"8ZjyCRiBWFYkneahHwxCv3wb2a1ORpYL".
+
+
+ 

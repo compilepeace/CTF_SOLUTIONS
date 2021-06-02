@@ -1,0 +1,39 @@
+1.  First loging in to the remote server via ssh
+
+        $ ssh bandit20@bandit.labs.overthewire.org -p 2220
+		  username: bandit20
+		  password: GbKksEFF4yrVs6il55v6gwY5aVje5f0j
+
+	
+2.	As the admin says -
+		"There is a setuid binary in the homedirectory that does the following: it makes a connection
+		to localhost on the port you specify as a commandline argument. It then reads a line of text 
+		from the connection and compares it to the password in the previous level (bandit20). If the 
+		password is correct, it will transmit the password for the next level (bandit21)."
+
+	
+
+3.	Now to get the password to the next level,we need to set up a listening service on any non used 
+	port say - 50000. To set up TCP or UDP connections we use netcat tool ('nc' command). The binary
+	suconnect takes in port number as an argument parameter and asks for password of the current
+	level once the connection is made, if the password is correct, it sends the password to the 
+	listening port. So for this I logged on twice to the bandit20 level. (once to set up the listening
+	service and second to run the "suconnect" binary)
+
+		$ echo "GbKksEFF4yrVs6il55v6gwY5aVje5f0j" | nc -l -p 50000
+		
+	It waits silently for the incoming connections.
+	
+		$ ./suconnect 56789
+		Read: GbKksEFF4yrVs6il55v6gwY5aVje5f0j
+		Password matches, sending next password
+
+	The listening port then prints the password for us -
+
+		$echo "GbKksEFF4yrVs6il55v6gwY5aVje5f0j" | nc -l -p 56789   
+		gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr
+
+
+
+~>	Hence we obtain the password string for the next level(21) - "gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr"
+		

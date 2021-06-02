@@ -1,0 +1,33 @@
+
+
+
+1.	First, loging in to the remote server running ssh-server on port 2220
+		
+		$ ssh bandit8@bandit.labs.overthewire.org -p 2220
+			username: bandit8
+			password: cvX2JJa4CFALtqS87jk27qwqGhBM9plV
+
+
+2.	As the admin says - 
+		" Password is stored in a file data.txt on the line of text that occurs only once "
+	
+		$ ls 
+		data.txt		
+		$ cat data.txt				# We see a large file filled with keys
+		...
+
+ 
+3. 	Next, we should come up with a command which segregates a unique line within bunch of
+	lines in a file. For that we use 'uniq' command with -u flag.
+
+
+		$ cat data.txt | sort | uniq -u
+		UsvVyFSfZZWbi6wgC7dAFyFuR6jQQUhR
+
+
+~>	The 'uniq' command removes the duplicate lines from the sorted output which is piped 
+	into it as input (pipe operator). But when 'uniq' command is used in conjunction with
+	-u flag, it displays only the unique line from the sorted input given to it.
+
+		The above string is used as password for level9.
+

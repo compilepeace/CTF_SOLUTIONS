@@ -1,0 +1,41 @@
+
+
+1.	First we login to remote server via ssh
+	
+		$ ssh bandit.labs.overthewire.org -p 2220
+		
+			username: bandit6
+			password: DXjZPULLxYr17uwoI01bNLQbtFemEgo7
+
+
+2.	The admin tells about the charecterstics of the password -
+		
+		* owned by the user bandit7
+		* owned by the group bandit6
+		* 33 bytes in size
+
+3.	So, based on the above information, we use find command to find the flag. We will start
+	our searching from root directory in this case since the file is on our server anywhere.
+
+
+		$ find / -type f -user bandit7 -group bandit6 -size 33c 
+		...
+
+	
+	We got many result cases telling "find: find: '/run/user/11023': Permission denied"				
+	In between all there errors in our location found. 
+	So, what do we do here is redirect stderr (fd 2) to some place known as a 'black hole'
+	in linux systems - /dev/null. The data sent to this location goes nowhere.
+	
+
+			$ find / -type f -user bandit7 -group bandit6 -size 33c 2>/dev/null
+			/var/lib/dpkg/info/bandit7.password
+		
+			$ cat /var/lib/dpkg/info/bandit7.password
+			HKBPTKQnIay4Fw76bEy8PVxKEDQRKTzs
+		
+
+~>	Here we learnt more about 'find' command and also discarding errors by redirecting stderr
+	(fd 2) stream. 
+	The above string in used as password to level7. 			
+

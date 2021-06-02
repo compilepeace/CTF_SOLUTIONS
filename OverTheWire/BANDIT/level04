@@ -1,0 +1,21 @@
+
+
+1.	First, loggin in to the remote server by using ssh
+
+		$ ssh bandit4@bandit.labs.overthewire.org -p 2220
+
+			username: bandit4
+			password: pIwrPrtPN36QITSp3EQaw936yaFoFgAB
+
+		$ cd inhere
+		$ cat ./[[:punct:]]* 				# or $cat ./[[:punct:]]file0{1..9}
+		koReBOKuIDDepwhWk7jZC0RTdopnAYKh
+
+
+~>	Here the admin used dashed filenames to store the key and made many files and stored
+   	garbage values in those files. We could cat all files or cat indivisual files to 
+	retrieve the key from these files. The 'file07' held the key for the level5.
+
+
+	This above string is used as password for the next level (level5).
+	

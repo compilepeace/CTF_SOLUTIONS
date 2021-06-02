@@ -1,0 +1,16 @@
+
+1. connecting through ssh - ssh username@host -p port_num
+
+	$ ssh bandit0@bandit.labs.overthewire.org -p 2220
+		
+		username: bandit0
+		password: bandit0	
+
+
+	$ cat readme
+	
+	boJ9jbbUNNfktd78OOpsqOltutMc3MY1
+
+
+	The above string was the key to level1
+						

@@ -1,0 +1,48 @@
+1.  First loging in to the remote server via ssh
+
+        $ ssh bandit22@bandit.labs.overthewire.org -p 2220
+		  username: bandit22
+		  password: Yk7owGAcWjwMVRwrTesJEwB7WVOiILLI
+
+	
+2.	As the admin says -
+		 "A program is running automatically at regular intervals from cron, the time-based job 
+		 scheduler. Look in /etc/cron.d/ for the configuration and see what command is being executed.
+
+		 NOTE: Looking at shell scripts written by other people is a very useful skill. The script for 	
+		 this level is intentionally made easy to read. If you are having problems understanding what it
+		 does, try executing it to see the debug information it prints."
+
+
+3.	First we need to figure out what is in /etc/cron.d/cronjob_bandit23
+
+		$ cat /etc/cron.d/cronjob_bandit23
+		@reboot bandit23 /usr/bin/cronjob_bandit23.sh  &> /dev/null
+		* * * * * bandit23 /usr/bin/cronjob_bandit23.sh  &> /dev/null
+		
+	As we see "/usr/bin/cronjob_bandit23.sh" script is running at intervals, so lets see what the script 
+	does. (I am writing comments to this script, comments are preceeded by a '#' symbol).
+
+		$ cat /usr/bin/cronjob_bandit23.sh
+		#!/bin/bash
+
+		myname=$(whoami)			# Here '$()' is command substitution, i.e. the variable 'myname' stores the result of the command 'whoami'
+
+		mytarget=$(echo I am user $myname | md5sum | cut -d ' ' -f 1)		# This command substitution stores the md5 hash value of a string and storing it to the 'mytarget' variable
+		
+		echo "Copying passwordfile /etc/bandit_pass/$myname to /tmp/$mytarget"
+
+		cat /etc/bandit_pass/$myname > /tmp/$mytarget
+
+
+4.	Since this script is executed by cron job scheduler, it must have made a password file for the user- 
+	bandit23. We just need to calculate the md5 hash.
+
+		$ echo I am user bandit23 | md5sum | cut -d ' ' -f 1
+		8ca319486bfbbc3663ea0fbe81326349
+
+		$ cat /tmp/8ca319486bfbbc3663ea0fbe81326349
+		jc1udXuA1tiHqjIsL8yaapX5XIAI6i0n
+
+
+~>	So, password for the next stage-23 is "jc1udXuA1tiHqjIsL8yaapX5XIAI6i0n"		

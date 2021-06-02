@@ -1,0 +1,55 @@
+
+
+1.  First loging in to the remote server via ssh
+
+        $ ssh bandit13@bandit.labs.overthewire.org -p 2220
+            username: bandit13
+            password: 8ZjyCRiBWFYkneahHwxCv3wb2a1ORpYL
+
+
+2.  As the admin says -
+        " The password for the next level is stored in /etc/bandit_pass/bandit14 and can only be read by 
+		user bandit14. For this level, you don’t get the next password, but you get a private SSH key that
+		can be used to log into the next level. Note: localhost is a hostname that refers to the machine
+		you	are working on "
+
+
+3.	After searching quite well on the authentication system of ssh, I 
+	tried many of the ways by which I could use ssh_privatekey to 
+	authenticate the user bandit14.
+
+	->	Meanwhile I learnt that if we could just generate our key-pairs 
+		by "ssh-keygen" and then copy our public-key to the remote server
+		(by using "ssh-copy-id" the authentication will be done on basis of "~/.ssh/id_rsa" (private key) rather than password based 
+		authentication.
+		But since, we are not allowed to write in home directories of the
+		users we cannot do this.
+
+	~> 	After spending lot of time in reading all this I looked at options
+		"ssh" provides to login. "-i" option allows us to login via 
+		private key.
+
+		$ ssh -i sshkey.private bandit14@localhost
+
+
+		You get this prompt-
+		bandit14@bandit:~$ 
+
+	This command uses -i option followed by the file containing the ssh
+	private key followed by username and the localhost (i.e. connected
+	to self 127.0.0.1).
+
+
+4.	Since the password for the next level is stored in /etc/bandit_pass/
+	bandit14
+
+		$ cat /etc/bandit_pass/bandit14
+		4wcYUJFw0k0XLShlDzztnTBHiqxU3b3e
+
+	We get the password string.
+
+	What I learnt in this challenge was go through all the options of the
+	command first rather than thinking towards the alternatives. You must
+	know both the powers and the limitations of the command in use. 
+				
+

@@ -1,0 +1,16 @@
+
+1. First logining in to remote server via ssh
+	
+	$ ssh bandit2@bandit.labs.overthewire.org -p 2220
+		
+		username: bandit2
+		password: CV1DtqXWVFXTvM2F0k09SHz0YwRINYA9
+
+	$ cat spaces\ in\ this\ filename				# alternatively can use tab completion
+	UmHadQclWmgdLOKQ3YNgjWxGoRMb5luK
+
+
+~> Here we used '\' charecter to escape " " whitespace charecter. Alternatively we could type 
+   one or two letters and then press 'tab' key to perform autocompletion of this filename.	
+   The above string is used to get access to remote host for level3.	
+	

@@ -1,0 +1,29 @@
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=- RPISEC : MODERN BINARY EXPLOITATION (CSCI - 4968) -=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+~~~~~ Name   : Abhinav Thakur
+~~~~~ Email  : compilepeace@gmail.com
+~~~~~ Binary : crackme0x00a
+
+
+
+##	FIRST STEP
+=>	As always, first step is to extract all the strings from the binary using a command line utility
+	called "strings".
+
+		$ strings crackme0x00a
+		.
+		.
+		.
+		g00dJ0B!
+		.
+		.
+
+		$ ./crackme0x00a
+		Enter password: g00dJ0B!
+		Congrats!
+
+
+~	Yipee.. we solved our first challenge.

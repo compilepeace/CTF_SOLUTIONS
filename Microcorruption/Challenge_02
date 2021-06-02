@@ -1,0 +1,108 @@
+
+___________________________________________ MICROCORRUPTION WRITEUPS _________________________________________I
+			
+========= Abhinav Thakur
+========= compilepeace@gmail.com
+
+                                  =-=-=-=-=-=   Challenge - 2   =-=-=-=-=
+
+
+
+~>	Hey there, this is my first writeup on microcorruption. Since this is the first challenge after the 
+	tutorial which teaches the basics of how to use the debugger in order to understand what the program 
+	embedded in the lock device does. 
+
+	Lets get started,
+	
+		Since this was my first program to debug with MSP430 MCU Assembly, I followed up each instruction set
+	step-by-step in order to figure out how does the authentication really works. I have commented out what
+	most of the assembly instructions do.
+
+
+
+1.	Having a look on the function names tells us much about what the function will do which takes me right
+	up to the <check_password> function - 
+	
+
+44bc <check_password>
+
+44bc:  0e43           clr	r14				# clears the r14 register to 0x0
+		
+44be:  0d4f           mov	r15, r13			# moves value at r15 to value at r13
+								# r15 contains the address of our password string														
+44c0:  0d5e           add	r14, r13			# r13 = r14 + r13	
+
+44c2:  ee9d 0024      cmp.b	@r13, 0x2400(r14)		# compared the first byte at r13 to first byte at
+								# address 0x2400 (which contains the string 
+								# "HafsIeT" )
+
+44c6:  0520           jne	#0x44d2 <check_password+0x16>	# jne - short for "jump if not equal"
+								# if the previous comparison is equal, then go to
+								# instruction <check_password+0x16> which is 
+								# second last instruction of this function
+
+44c8:  1e53           inc	r14				# increment r14
+		
+44ca:  3e92           cmp	#0x8, r14			# compare r14 with 0x8
+
+44cc:  f823           jne	#0x44be <check_password+0x2>	# if r14 == 8, jump to second instruction of the
+								# function
+		
+44ce:  1f43           mov	#0x1, r15			# else move value 0x1 to register r15
+
+44d0:  3041           ret					# return
+
+44d2:  0f43           clr	r15
+
+44d4:  3041           ret
+
+
+
+2.	Have a look at address 0x2400, there is a string - "HafsIeT".
+	This function basically compares our password typed with this 8 bytes long string (see the 4th instruction
+ 	of the above function). If all of the 8 bytes of the string "HafsIeT" at 0x2400 matches our typed 
+	password, r15 is set to 0x1 ( 4th last instruction of this function ).
+
+
+
+3.	Have a look at what statement does this <check_password> function returns -
+
+4438 <main>
+
+...
+
+
+
+4450:  b012 bc44      call	#0x44bc <check_password>
+
+4454:  0f93           tst	r15						# tests the value at r15
+
+4456:  0520           jnz	#0x4462 <main+0x2a>				# if r15 != 0, go to 4462
+										# which calls <unlock_door>
+4458:  3f40 0345      mov	#0x4503 "Invalid password; try again.", r15
+
+445c:  b012 9445      call	#0x4594 <puts>
+
+4460:  063c           jmp	#0x446e <main+0x36>
+
+4462:  3f40 2045      mov	#0x4520 "Access Granted!", r15
+
+4466:  b012 9445      call	#0x4594 <puts>
+
+446a:  b012 d644      call	#0x44d6 <unlock_door>
+
+
+...
+
+
+
+4.	So, our we have our password string at 0x2400 i.e. "HafsIeT", which is compared charecter by charecter
+	and value at register r15 is set to 0x1 (which is furthur compared in <main>) due to which function
+	<unlock_door> is called.
+
+
+
+5.	Type "solve" on the debugger to submit your final password "HafsIeT"
+	and yeah!, we completed the first challenge.
+
+

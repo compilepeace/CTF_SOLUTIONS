@@ -1,0 +1,27 @@
+
+
+1. First connecting via ssh to remote server
+
+	$ ssh bandit1@bandit.labs.overthewire.org
+
+		username: bandit1
+		password: boJ9jbbUNNfktd78OOpsqOltutMc3MY1
+
+	
+~> Password is the key from previous level
+
+
+	$ cat -								# Won't read the '-' named file	
+	$ cat ./[[:punct:]]					# Using a punctuation class	
+	CV1DtqXWVFXTvM2F0k09SHz0YwRINYA9
+
+	OR, can also do
+	
+	$ cat ./["^-"]						# Using a regular expression 
+	CV1DtqXWVFXTvM2F0k09SHz0YwRINYA9
+
+
+~> Here we used the punctuation class (regular expression) and cat command to view the contents
+   of the file.
+   The above string will be used as a password to log in to remote host for level2
+	

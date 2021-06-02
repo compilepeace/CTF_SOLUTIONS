@@ -1,0 +1,23 @@
+
+
+1.	First loging into remote server via ssh
+		$ ssh bandit11@bandit.labs.overthewire.org -p 2220
+			username: bandit11
+			password: IFukwKGsFW8MOq3IRFqrxE1hxTNEbUPR
+
+
+2.	As the admin says -
+		"The password for the next level is stored in the file data.txt, where all lowercase (a-z)
+		 and uppercase (A-Z) letters have been rotated by 13 positions. " 
+
+
+3.	There are different ways of rotating the string by 13 letter positions - 
+		
+		(a) I started out by making a python script for this purpose. (named - rotate13.py)
+		(b) Secondly there is a command line tool called 'tr' which is used to either transliterate
+			charecters (i.e. converting one alphabet to another).
+			
+			$ echo "Gur cnffjbeq vf 5Gr8L4qetPEsPk8htqjhRK8XSP6x2RHh" | tr [a-zA-Z] [n-za-mN-ZA-M]
+		
+
+~>	The password for the level12 is '5Te8Y4drgCRfCx8ugdwuEX8KFC6k2EUu'.

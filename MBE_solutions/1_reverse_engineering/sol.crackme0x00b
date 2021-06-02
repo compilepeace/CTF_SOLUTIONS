@@ -1,0 +1,241 @@
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=- RPISEC : MODERN BINARY EXPLOITATION (CSCI - 4968) -=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+~~~~~ Name   : Abhinav Thakur
+~~~~~ Email  : compilepeace@gmail.com
+~~~~~ Binary : crackme0x00b
+
+
+
+~>	Hey there, this is the second binary I am solving after "crackme0x00a". 
+	The easy way for finding password is through "strings" utility which I have presented after 
+	explaining my first approach. 
+
+
+##	FIRST APPROACH
+=>	I started off by extracting strings from the binary (by using "strings" utility), where I got 
+	no password like string. Then thought of using gdb for dynamically analysing the binary.
+	
+
+##	USING GDB
+=>	Note that I am using the peda extension of gdb. Opened up gdb and tried to analyse -
+
+
+$ gdb -q ./crackme0x00b
+ 0x80484ce
+(gdb) info locals
+No symbol table info available
+
+(gdb) break *main+38
+Breakpoint 1 at 0x80484ba
+
+(gdb) break *main+58
+Breakpoint 2 at 0x80484ce
+		
+(gdb) disassemble main
+Dump of assembler code for function main:
+   0x08048494 <+0>:	push   ebp
+   0x08048495 <+1>:	mov    ebp,esp
+   0x08048497 <+3>:	and    esp,0xfffffff0
+   0x0804849a <+6>:	add    esp,0xffffff80
+   0x0804849d <+9>:	mov    eax,0x80485d0
+   0x080484a2 <+14>:	mov    DWORD PTR [esp],eax
+   0x080484a5 <+17>:	call   0x8048380 <printf@plt>
+   0x080484aa <+22>:	mov    eax,0x80485e1
+   0x080484af <+27>:	lea    edx,[esp+0x1c]
+   0x080484b3 <+31>:	mov    DWORD PTR [esp+0x4],edx
+   0x080484b7 <+35>:	mov    DWORD PTR [esp],eax
+=> 0x080484ba <+38>:	call   0x80483d0 <__isoc99_scanf@plt>
+   0x080484bf <+43>:	lea    eax,[esp+0x1c]
+   0x080484c3 <+47>:	mov    DWORD PTR [esp+0x4],eax
+   0x080484c7 <+51>:	mov    DWORD PTR [esp],0x804a040
+   0x080484ce <+58>:	call   0x8048390 <wcscmp@plt>
+   0x080484d3 <+63>:	test   eax,eax
+   0x080484d5 <+65>:	jne    0x80484eb <main+87>
+   0x080484d7 <+67>:	mov    DWORD PTR [esp],0x80485e5
+   0x080484de <+74>:	call   0x80483a0 <puts@plt>
+   0x080484e3 <+79>:	nop
+   0x080484e4 <+80>:	mov    eax,0x0
+   0x080484e9 <+85>:	leave  
+   0x080484ea <+86>:	ret    
+   0x080484eb <+87>:	mov    DWORD PTR [esp],0x80485ef
+   0x080484f2 <+94>:	call   0x80483a0 <puts@plt>
+   0x080484f7 <+99>:	jmp    0x804849d <main+9>
+End of assembler dump.
+
+(gdb) nexti
+Enter password: Abhinav
+
+(gdb) x/20s $esp
+0xbfffef60:	"\341\205\004\b|\357\377\277", <incomplete sequence \302>
+0xbfffef6a:	""
+0xbfffef6b:	""
+0xbfffef6c:	""
+0xbfffef6d:	""
+0xbfffef6e:	""
+0xbfffef6f:	""
+0xbfffef70:	"\310\357\377\267\220\357\377\277h\372\377\267A"
+0xbfffef7e:	""
+0xbfffef7f:	""
+0xbfffef80:	"b"
+0xbfffef82:	""
+0xbfffef83:	""
+0xbfffef84:	"h"
+0xbfffef86:	""
+0xbfffef87:	""
+0xbfffef88:	"i"
+0xbfffef8a:	""
+0xbfffef8b:	""
+0xbfffef8c:	"n"
+0xbfffef8e:	""
+0xbfffef8f:	""
+0xbfffef90:	"a"
+0xbfffef92:	""
+0xbfffef93:	""
+0xbfffef94:	"v"
+0xbfffef96:	""
+
+
+~>	As you can see, that our password, i.e. "Abhinav" is being stored into the memory where each 
+	charecter is taking more than 1 byte of space stating that it is not an ASCII charecter, 
+	they seem to be using "wide charecters" and furthur if when I dynamically analysed the binary
+	the assembly instructions (at the time of calling <printf@plt>) seem to store an address in
+	register "$eax" which when dereferenced	ponits to a string "%ls" which is used in formatting 
+	of wide charecters.		
+	printf("%ls") will format the wide charecter string in the form of ASCII strings and print
+	it to the STDOUT. Each unicode charecter takes 2 bytes of storage space in memory unlike the
+	ASCII encoded charecters (normally used in programs) which require a single byte of storage 
+	space. Here, the binary is using wide charecter string in which each charecter is taking 
+	4 bytes (32-bits) space in memory.
+
+
+(gdb) x/20s  x/20s 0xbfffef7c
+0xbfffef7c:	"A"
+0xbfffef7e:	""
+0xbfffef7f:	""
+0xbfffef80:	"b"
+0xbfffef82:	""
+0xbfffef83:	""
+0xbfffef84:	"h"
+0xbfffef86:	""
+0xbfffef87:	""
+0xbfffef88:	"i"
+0xbfffef8a:	""
+0xbfffef8b:	""
+0xbfffef8c:	"n"
+0xbfffef8e:	""
+0xbfffef8f:	""
+0xbfffef90:	"a"
+0xbfffef92:	""
+0xbfffef93:	""
+0xbfffef94:	"v"
+0xbfffef96:	""
+
+
+(gdb) x/25xw $esp
+0xbfffef60:	0x080485e1	0xbfffef7c	0x000000c2	0x00000000
+0xbfffef70:	0xb7ffefc8	0xbfffef90	0xb7fffa68	0x00000041
+0xbfffef80:	0x00000062	0x00000068	0x00000069	0x0000006e
+0xbfffef90:	0x00000061	0x00000076	0x00000000	0xb7fd00f0
+0xbfffefa0:	0x00000000	0x08049ff4	0x00000001	0x08048361
+0xbfffefb0:	0x00008000	0xb7fb7000	0x08049ff4	0x08048521
+0xbfffefc0:	0xb7fb7000
+
+
+~>	Have a careful look at the memory address 0xbfffef64, it has an address stored i.e.
+	0xbfffef64 -> 0xbfffef7c (0x41 or "A") (this is where our string starts in memory). Here each
+	succeeding charecter of our input string (password) is stored after 4 bytes of our preceeding
+	charecter.
+
+
+(gdb) continuet
+Breakpoint 2,  0x80484ce in main ()
+
+~>	Here <wcscmp@plt> is the "wide charecter string compare" function, the stack pointer (esp) stores
+	another address, 0x804a040 --> 0x77 ('w').
+	Here peda guessed the arguments for the <wcscmp@plt>
+
+
+Guessed arguments:
+arg[0]: 0x804a040 --> 0x77 ('w')
+arg[1]: 0xbfffef8c --> 0x41 ('A')
+
+
+~>	Therefore, analysing the strings stored at this address - 0x804a040 gives us the bellow output. 
+
+(gdb) x/25s 0x804a040 
+0x804a040 <pass.1964>:	"w"
+0x804a042 <pass.1964+2>:	""
+0x804a043 <pass.1964+3>:	""
+0x804a044 <pass.1964+4>:	"0"
+0x804a046 <pass.1964+6>:	""
+0x804a047 <pass.1964+7>:	""
+0x804a048 <pass.1964+8>:	"w"
+0x804a04a <pass.1964+10>:	""
+0x804a04b <pass.1964+11>:	""
+0x804a04c <pass.1964+12>:	"g"
+0x804a04e <pass.1964+14>:	""
+0x804a04f <pass.1964+15>:	""
+0x804a050 <pass.1964+16>:	"r"
+0x804a052 <pass.1964+18>:	""
+0x804a053 <pass.1964+19>:	""
+0x804a054 <pass.1964+20>:	"e"
+0x804a056 <pass.1964+22>:	""
+0x804a057 <pass.1964+23>:	""
+0x804a058 <pass.1964+24>:	"a"
+0x804a05a <pass.1964+26>:	""
+0x804a05b <pass.1964+27>:	""
+0x804a05c <pass.1964+28>:	"t"
+0x804a05e <pass.1964+30>:	""
+0x804a05f <pass.1964+31>:	""
+
+
+~>	Clearly, <wcscmp@plt> is using this string "w0wgreat" to compare it with our input.
+	Therefore, we give it as a password.
+
+
+	$ ./crackme0x00b
+	Enter password: w0wgreat
+	Congrats!
+
+
+~>	Alternatively, we could also see the content of hexdump of .data section of the 32bit elf.
+		
+		$ objdump -s crackme0x00b
+		.
+		.
+		Contents of section .data:
+		804a020 00000000 00000000 00000000 00000000  ................
+ 		804a030 00000000 00000000 00000000 00000000  ................
+		804a040 77000000 30000000 77000000 67000000  w...0...w...g...
+		804a050 72000000 65000000 61000000 74000000  r...e...a...t...
+ 		804a060 00000000                             ....            
+		.
+		.	
+
+
+
+~>	Alternatively, using "strings" to extract password (encoded with 32bit charecter size) is surely
+	a better option. The hint made me realize this! my apologies..
+
+		$ strings -e L crackme0x00b
+		w0wgreat
+
+	This extracts little endian strings selecting those with charecter size 32-bits.
+	Here, 
+		s = 7-bit charecter
+		S = 8-bit charecter
+		l = 16-bit little endian string
+		b = 16-bit big endian string
+		L = 32-bit little endian string
+		B = 32-bti big endian string
+ 
+	For more options type
+		 
+		$ strings --help
+
+
+
+~>	Yipee! we successfully solved the second challenge. Have a nice day.

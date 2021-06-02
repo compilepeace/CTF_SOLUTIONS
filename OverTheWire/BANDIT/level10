@@ -1,0 +1,29 @@
+	
+
+
+1.	First loging in to the remote server via ssh
+		
+		$ ssh bandit10@bandit.labs.overthewire.org -p 2220
+			username: bandit10
+			password: truKLdjsbJ5g7yyJ2X2R0o3a5HQJFuLk
+
+
+2.	As the admin says - 
+		" The password for the next level is stored in the file data.txt, which contains 
+		  base64 encoded data"
+
+
+3.	Base64 encoding treats binary data as integers and translates it into a base64 representation.
+	Base64 uses [A-Z] [a-z] and [0-9] for the first 62 values. Each Base64 digit represents 
+	exactly 6-bits of data. 
+	By using the information about Base64 encoding, I thought of making a python script for 
+	decoding Base64 encoding. (just for fun)
+
+
+4.	Alternatively we can use the 'base64' command for linux systems. Where -d flag is for 'decode'
+		
+		$ base64 -d data.txt					
+		The password is IFukwKGsFW8MOq3IRFqrxE1hxTNEbUPR
+
+
+~>	So, above is the password for Bandit's level11.

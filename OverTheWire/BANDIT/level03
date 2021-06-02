@@ -1,0 +1,21 @@
+
+
+1. First, loging in to the remote server by using ssh
+	
+	$ ssh bandit3@bandit.labs.overthewire.org -p 2220
+		
+		username: bandit3
+		password: UmHadQclWmgdLOKQ3YNgjWxGoRMb5luK
+
+	$ cd inhere/
+	$ ls -a						# to view all (including hidden files)
+	$ cat .hidden
+	pIwrPrtPN36QITSp3EQaw936yaFoFgAB
+
+
+~> Here, the admin stored the password in a hidden file ( files prefixed with a period '.' 
+   symbol are treated as hidden files on linux system, generally hidden files are made and
+   used as configuration files by the system ).
+   So we used the cat command to view the hidden file.
+
+   The above string is used as password for the next level (i.e. level4).

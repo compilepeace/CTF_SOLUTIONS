@@ -1,0 +1,108 @@
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=- RPISEC : MODERN BINARY EXPLOITATION (CSCI - 4968) -=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+~~~~~ Name   : Abhinav Thakur
+~~~~~ Email  : compilepeace@gmail.com
+~~~~~ Binary : crackme0x01
+
+
+
+~>	Hey there, this is the third binary I am solving after "crackme0x0b". 
+	
+
+
+##	FIRST APPROACH
+=>	My first approach included searching for strings in the .data section in ELF where I got no clue.
+	After statically analysing the binary, I decieded to start analysing the binary dynamically, 
+	i.e. with a debugger, I am using gdb.
+
+
+
+##	DYNAMICALLY ANALYSING THE BINARY
+=>	Fire up gdb on your terminal by issuing the command -
+		
+		$ gdb -q ./crackme0x01
+
+(gdb) disass main
+Dump of assembler code for function main:
+   0x080483e4 <+0>:	push   ebp
+   0x080483e5 <+1>:	mov    ebp,esp
+   0x080483e7 <+3>:	sub    esp,0x18
+   0x080483ea <+6>:	and    esp,0xfffffff0
+   0x080483ed <+9>:	mov    eax,0x0
+   0x080483f2 <+14>:	add    eax,0xf
+   0x080483f5 <+17>:	add    eax,0xf
+   0x080483f8 <+20>:	shr    eax,0x4
+   0x080483fb <+23>:	shl    eax,0x4
+   0x080483fe <+26>:	sub    esp,eax
+   0x08048400 <+28>:	mov    DWORD PTR [esp],0x8048528
+   0x08048407 <+35>:	call   0x804831c <printf@plt>
+   0x0804840c <+40>:	mov    DWORD PTR [esp],0x8048541
+   0x08048413 <+47>:	call   0x804831c <printf@plt>
+   0x08048418 <+52>:	lea    eax,[ebp-0x4]
+   0x0804841b <+55>:	mov    DWORD PTR [esp+0x4],eax
+   0x0804841f <+59>:	mov    DWORD PTR [esp],0x804854c
+   0x08048426 <+66>:	call   0x804830c <scanf@plt>
+   0x0804842b <+71>:	cmp    DWORD PTR [ebp-0x4],0x149a
+   0x08048432 <+78>:	je     0x8048442 <main+94>
+   0x08048434 <+80>:	mov    DWORD PTR [esp],0x804854f
+   0x0804843b <+87>:	call   0x804831c <printf@plt>
+   0x08048440 <+92>:	jmp    0x804844e <main+106>
+   0x08048442 <+94>:	mov    DWORD PTR [esp],0x8048562
+   0x08048449 <+101>:	call   0x804831c <printf@plt>
+   0x0804844e <+106>:	mov    eax,0x0
+   0x08048453 <+111>:	leave  
+   0x08048454 <+112>:	ret    
+End of assembler dump.
+		
+
+~>	Disassembling main function gives us a clear disassembly of our program logic. After this I 
+	thought of doing single stepping over the assembly instructions and examining the registers
+	and memory.
+	The hints I found out was that scanf() used "%d" as its parameter, have a look...
+	0x0804841f <+59>:    mov    DWORD PTR [esp],0x804854c
+	examine the address 0x804854c, it points to the string "%d" and gets pushed onto the stack for
+	usage as a parameter in <scanf@plt>.
+	which means the program is expecting an integer value as input. You can see this by setting up
+ 	a breakpoint at <scanf@plt>
+
+
+(gdb) break *main+59
+(gdb) r
+
+(gdb) x/s 0x804854c
+0x804854c: 		"%d"
+
+(gdb) nexti
+IOLI Crackme Level 0x01
+Password: 909009
+
+
+~>	The next instruction, i.e. 
+		0x0804842b <+71>:    cmp    DWORD PTR [ebp-0x4],0x149a
+	compares a DWORD (double word - 4 bytes) value at [ebp-0x4] to the hex value 0x149a, the value
+	at [ebp-0x4] is the password we have provided. Decimal equivalent of 0x149a is 5274 and this
+	is the password !
+
+
+(gdb) x/d $ebp-0x4
+0xbfffeff4:		909009
+
+
+
+~>	Hence, running the binary with decimal equivalent of 0x149a (5274)
+
+
+
+	$ ./crackme0x01
+	IOLI Crackme Level 0x01
+	Password: 5274
+	Password OK :)
+
+
+~>	Awesome, we cracked the third binary. After giving some time reversing binaries, you'll be able 
+	to spot the instructions required to set up breakpoints spend time on particular areas for 
+	cracking, till then step up through each instruction analysing register states and memory.
+	Don't give up!

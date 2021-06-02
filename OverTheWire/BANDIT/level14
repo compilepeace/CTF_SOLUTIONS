@@ -1,0 +1,29 @@
+1.  First loging in to the remote server via ssh
+
+        $ ssh bandit14@bandit.labs.overthewire.org -p 2220
+		  username: bandit14
+		  password: 4wcYUJFw0k0XLShlDzztnTBHiqxU3b3e
+
+
+		2.  As the admin says -
+					" The password for the next level can be retrieved by submitting the password of 
+			the current level to port 30000 on localhost. "
+
+
+2.	We can do this by connecting to the service running at port 30000 on localhost by telnet.
+	
+		$ telnet localhost 30000
+		Trying ::1...
+		Trying 127.0.0.1...
+		Connected to localhost.
+		Escape character is '^]'.
+		4wcYUJFw0k0XLShlDzztnTBHiqxU3b3e
+		Correct!
+		BfMYroe26WYalil77FoDi9qh59eK5xNr
+
+		Connection closed by foreign host.
+
+	
+	So, this service offers the password after we give it the password of this level as input
+	The password for the next level(15) is "BfMYroe26WYalil77FoDi9qh59eK5xNr"
+	

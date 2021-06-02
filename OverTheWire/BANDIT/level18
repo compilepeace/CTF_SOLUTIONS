@@ -1,0 +1,32 @@
+1.  First loging in to the remote server via ssh
+
+        $ ssh bandit18@bandit.labs.overthewire.org -p 2220
+		  username: bandit18
+		  password: kfBf3eYk5BPBRzwjqutbbfE887SVc5Yd 
+
+	
+2.	As soon as you try to login, you see visiting banner and - 
+	
+		...
+		Enjoy your stay!
+
+		Byebye !
+		Connection to bandit.labs.overthewire.org closed.
+
+
+3.	As the admin says -
+			"The password for the next level is stored in a file readme in the homedirectory. 
+			Unfortunately, someone has modified .bashrc to log you out when you log in with SSH. "
+
+
+
+4.	Simply execute the commands on remote server without remaining logged in.
+
+		$ ssh bandit18@bandit.labs.overthewire.org -p 2220 "cat readme"
+		This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+		bandit18@bandit.labs.overthewire.org's password: 
+		IueksS7Ubh8G3DCwVzrTd8rAVOwq3M5x
+
+	
+~>	Here we got the passkey for the next level(19) "IueksS7Ubh8G3DCwVzrTd8rAVOwq3M5x"	
+

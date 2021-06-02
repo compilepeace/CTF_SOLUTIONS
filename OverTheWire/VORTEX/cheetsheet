@@ -1,0 +1,33 @@
+
+
+##	COMMANDS
+
+env		: To run a program in a modified environment. Set a variable to its VALUE in the environment
+		  and run a COMMAND. (Used it with execlp() in vortex1) 
+
+
+
+##	ARCHIVES
+=>	GNU 'tar' saves many files together into a single tape or disk archive, and can restore 
+	individual files from the archive.
+
+tar -cf archive.tar f1 f2	: Creates an archive named 'archive.tar' from files 'f1' and 'f2'.
+tar -xf archive.tar			: Extracts all files from 'arhive.tar'
+tar -tvf archive.tar		: List the contents of an archive. 
+
+-f option says - Use ARCHIVE file or DEVICE archive.
+
+
+##	COPY FILES BETWEEN 2 MACHINES (REMOTE/HOST)
+
+scp -P 2228 vortex2@vortex.labs.overthewire.org:/vortex/vortex2  /home/critical/Desktop/
+
+
+##	SPECIAL PARAMETERS (Reference http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_03_02.html)
+
+$$	: Expands into the Process ID of the shell
+$@	: Expands to positional paramters starting from one.
+$#	: Expands to the number of positional paramters in decimal
+$?	: Expands to the EXIT STATUS of the most recently executed pipeline
+$!	: Expands to the Process ID of most recently executed background (asynchronous) command.
+$0	: Expands to the name of shell script or shell.

@@ -1,0 +1,30 @@
+1.  First loging in to the remote server via ssh
+
+        $ ssh bandit19@bandit.labs.overthewire.org -p 2220
+		  username: bandit19
+		  password: IueksS7Ubh8G3DCwVzrTd8rAVOwq3M5x 
+
+	
+2.	As the admin says -
+		"To gain access to the next level, you should use the setuid binary in the homedirectory.
+		Execute it without arguments to find out how to use it. The password for this level can be
+		found in the usual place (/etc/bandit_pass), after you have used the setuid binary. "
+
+
+3.	If a program has setuid bit set on it (suppose setuid root), then the program whenever invoked by
+	a normal user will always run as a part of setuid user (in assumed case - root).
+	The program in this challenge also has a setuid bit set, which can be viewed by long listing the
+	home directory contents which shows -
+
+	-rwsr-x--- 1 bandit20 bandit19 7408 Dec 28 14:34 bandit20-do
+
+	This 's' here in place of executable indicates the setuid bit. The program here runs on behalf of
+	the bandit20 user, who has access to the file /etc/bandit_pass/bandit20
+
+
+		$ ./bandit20-do cat /etc/bandit_pass/bandit20
+		GbKksEFF4yrVs6il55v6gwY5aVje5f0j
+		
+	
+~>	We got the passcode to the next level(20) - "GbKksEFF4yrVs6il55v6gwY5aVje5f0j"
+
